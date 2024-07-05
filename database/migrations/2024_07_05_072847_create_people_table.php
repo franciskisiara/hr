@@ -11,21 +11,44 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('people', function (Blueprint $table) {
+        Schema::create('HRData', function (Blueprint $table) {
             $table->id();
-            $table->string('staff_number');
-            $table->unsignedBigInteger('object_type_id');
-            $table->unsignedBigInteger('manager_id')->nullable();
-            // $table->enum('HRType', [
-            //     'Empployee',
-            //     'Contractor',
-            // ]);
-            // $table->id('Title', [
+            $table->string('staffId')->unique();
+            $table->string('objectType');
+            $table->string('manager')->index()->nullable();
+            $table->enum('HRType', [
+                'Employee',
+                'Contractor',
+            ]);
+            $table->enum('title', [
+                'Architect',
+                'CEO',
+                'Developer',
+                'Engineer',
+                'Intern',
+                'Sales Associate',
+                'Sales Lead',
+                'Sr. Engineer',
+                'Sr. Technologist',
+                'Support Engineer',
+                'Human Resource',
+                'VP',
+            ]);
+            $table->enum('department', [
+                'Engineering',
+                'Executive',
+                'HR',
+                'IT',
+                'Sales',
+            ]);
+            $table->string('firstName');
+            $table->string('middleName')->nullable();
+            $table->string('lastName');
+            $table->timestamps();
+        });
 
-            // ]);
-
-            $table->foreign('object_type_id')->references('id')->on('object_types')->cascadeOnDelete();
-            $table->foreign('manager_id')->references('id')->on('people');
+        Schema::table('HRData', function (Blueprint $table) {
+            $table->foreign('manager')->references('staffId')->on('HRData');
         });
     }
 
@@ -34,6 +57,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('people');
+        Schema::dropIfExists('HRData');
     }
 };
